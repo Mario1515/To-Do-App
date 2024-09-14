@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Axios from "axios";
+import axiosInstance from '../../config/axiosConfig';
 
 const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
 
@@ -10,7 +10,7 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     //Post request to Server
-    Axios.post("http://localhost:3000/tasks/create", {
+    axiosInstance.post("/tasks/create", {
         title: title,
         description: description,
         status: status,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Axios from "axios";
+import axiosInstance from '../../config/axiosConfig';
 
 const EditTaskModal = ({ isOpen, onClose, task }) => {
 
@@ -21,7 +21,7 @@ const EditTaskModal = ({ isOpen, onClose, task }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // PUT request to update the task
-    Axios.put(`http://localhost:3000/tasks/${task.id}`, {
+    axiosInstance.put(`http://localhost:3000/tasks/${task.id}`, {
       title: title,
       description: description,
       status: status,

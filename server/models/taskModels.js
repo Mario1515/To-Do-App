@@ -54,9 +54,29 @@ const updateTask = (taskId, task, callback) => {
   );
 };
 
+//UPDATE Task Status
+const updateTaskStatus = (taskId, { is_completed }, callback) => {
+  const query = 
+    "UPDATE tasks SET is_completed = ?, updated_at = NOW() WHERE id = ?";
+
+    db.query(
+      query,
+      [is_completed, taskId],
+      (error, results) => {
+        if (error) return callback(error, null);
+        if (results.affectedRows === 0) return callback(new Error('Task not found'), null);
+        db.query('SELECT * FROM tasks WHERE id = ?', [taskId], (err, [task]) => {
+          if (err) return callback(err, null);
+          callback(null, task);
+        });
+      }
+  );
+};
+
 module.exports = {
   addTask,
   getAllTasks,
   deleteTask,
-  updateTask, 
+  updateTask,
+  updateTaskStatus,
 };

@@ -1,6 +1,21 @@
 import React from 'react';
+import axiosInstance from '../../config/axiosConfig';
 
 const Task = ({ task, onEdit, onDelete, onComplete }) => {
+
+  const handleComplete = () => {
+    axiosInstance.patch(`/tasks/${task.id}`, {
+      is_completed: !task.is_completed,
+    })
+      .then(() => {
+        onComplete(task.id);
+      })
+      .catch((error) => {
+        console.error("Error updating task status:", error);
+      });
+  };
+
+
   return (
     <li className="border-t border-gray-200 py-3 px-4 flex items-center justify-between space-x-4">
       <div className="flex-1">
@@ -13,8 +28,12 @@ const Task = ({ task, onEdit, onDelete, onComplete }) => {
         <div className="mt-2 flex items-center text-sm text-gray-500 space-x-4">
           <p className="flex items-center">
             Status:
-            <span className={`font-semibold ml-1 ${task.is_completed ? 'text-green-600' : 'text-red-600'}`}>
-              {task.is_completed ? 'Completed' : 'Incomplete'}
+            <span
+              className={`font-semibold ml-1 ${
+                task.is_completed ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {task.is_completed ? "Completed" : "Incomplete"}
             </span>
           </p>
           <p className="flex items-center">
@@ -26,10 +45,9 @@ const Task = ({ task, onEdit, onDelete, onComplete }) => {
             <span className="font-medium ml-1">{task.updated_at}</span>
           </p>
         </div>
-
       </div>
 
-      {/* Button  */}
+      {/* Button */}
       <div className="flex-shrink-0 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
         <button
           onClick={() => onEdit(task.id)}
@@ -44,10 +62,10 @@ const Task = ({ task, onEdit, onDelete, onComplete }) => {
           Delete
         </button>
         <button
-          onClick={() => onComplete(task.id)}
+          onClick={handleComplete}
           className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          {task.is_completed ? 'Undo' : 'Complete'}
+          {task.is_completed ? "Undo" : "Complete"}
         </button>
       </div>
     </li>

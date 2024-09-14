@@ -3,46 +3,45 @@ const taskModel = require("../models/taskModels");
 
 //POST - add task
 router.post("/create", async (req, res) => {
-    
-    console.log(req.body);
-    const { title, description, is_completed } = req.body;
+  console.log(req.body);
+  const { title, description, is_completed } = req.body;
 
-    // Validate input 
-    if (!title) {
-        return res.status(400).json({ error: 'Title is required' });
+  // Validate input
+  if (!title) {
+    return res.status(400).json({ error: "Title is required" });
+  }
+
+  //Call to Model
+  taskModel.addTask({ title, description, is_completed }, (error, result) => {
+    if (error) {
+      return res.status(500).json({ error: "Failed to add task" });
     }
-
-    //Call to Model 
-    taskModel.addTask({ title, description, is_completed }, (error, result) => {
-        if (error) {
-            return res.status(500).json({ error: 'Failed to add task' });
-        }
-        res.status(201).json(result);
-    });
+    res.status(201).json(result);
+  });
 });
 
 //GET - get all tasks
 router.get("/", async (req, res) => {
-    taskModel.getAllTasks((error, tasks) => {
-      if (error) {
-        return res.status(500).json({ error: 'Failed to retrieve tasks' });
-      }
-      res.status(200).json(tasks);
-    });
+  taskModel.getAllTasks((error, tasks) => {
+    if (error) {
+      return res.status(500).json({ error: "Failed to retrieve tasks" });
+    }
+    res.status(200).json(tasks);
+  });
 });
 
-//DELETE - delete the task 
+//DELETE - delete the task
 router.delete("/:id", async (req, res) => {
-    const taskId = req.params.id;
-  
-    taskModel.deleteTask(taskId, (error) => {
-      if (error) {
-        return res.status(500).json({ error: 'Failed to delete task' });
-      }
-      res.status(200).json({ message: 'Task deleted successfully' });
-    });
+  const taskId = req.params.id;
+
+  taskModel.deleteTask(taskId, (error) => {
+    if (error) {
+      return res.status(500).json({ error: "Failed to delete task" });
+    }
+    res.status(200).json({ message: "Task deleted successfully" });
   });
-  
+});
+
 //EDIT - edit/update task
 router.put("/:id", async (req, res) => {
   const taskId = req.params.id;
@@ -50,18 +49,36 @@ router.put("/:id", async (req, res) => {
 
   // Validate input
   if (!title) {
-      return res.status(400).json({ error: 'Title is required' });
+    return res.status(400).json({ error: "Title is required" });
   }
 
   // Call to Model
-  taskModel.updateTask(taskId, { title, description, is_completed }, (error, result) => {
+  taskModel.updateTask(
+    taskId,
+    { title, description, is_completed },
+    (error, result) => {
       if (error) {
-          return res.status(500).json({ error: 'Failed to update task' });
+        return res.status(500).json({ error: "Failed to update task" });
       }
       res.status(200).json(result);
-  });
+    }
+  );
 });
 
+//PATCH - update task status
 
+router.patch("/:id", async (req, res) => {
+  const taskId = req.params.id;
+  const { is_completed } = req.body;
+
+  // Validate input
+  if (!is_completed) return res.status(400).json({ error: "Status is required" });
+
+  // Call to Model
+  taskModel.updateTaskStatus(taskId, { is_completed }, (error, result) => {
+    if (error) return res.status(500).json({ error: "Failed to update task status" });
+    res.status(200).json(result);
+  });
+});
 
 module.exports = router;
