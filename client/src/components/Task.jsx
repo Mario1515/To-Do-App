@@ -1,5 +1,6 @@
 import React from 'react';
 import axiosInstance from '../config/axiosConfig';
+import { formatDate } from '../utils/formater';  // Adjust the path if necessary
 
 const Task = ({ task, onEdit, onDelete, updateTasks }) => {
 
@@ -16,64 +17,64 @@ const Task = ({ task, onEdit, onDelete, updateTasks }) => {
       });
   };
 
-  return (
-    <li className="border-t border-gray-200 py-3 px-4 flex items-center justify-between space-x-4">
-      <div className="flex-1">
-        <h3 className="text-xl font-medium text-gray-900">{task.title}</h3>
-        {task.description && (
-          <p className="mt-1 text-sm text-gray-500">{task.description}</p>
-        )}
-
-        {/* Task Properties */}
-        <div className="mt-2 flex items-center text-sm text-gray-500 space-x-4">
-          <p className="flex items-center">
-            Status:
-            <span
-              className={`font-semibold ml-1 ${
-                task.is_completed ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {task.is_completed ? "Completed" : "In Progress"}
-            </span>
-          </p>
-          <p className="flex items-center">
-            Created:
-            <span className="font-medium ml-1">{task.created_at}</span>
-          </p>
-          <p className="flex items-center">
-            Updated:
-            <span className="font-medium ml-1">{task.updated_at}</span>
-          </p>
+  return  (
+    <li className="bg-white border border-gray-300 rounded-lg shadow-sm p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 sm:space-x-3 mb-2">
+      {/* Left Section: Title and Description */}
+      <div className="flex-1 flex flex-col">
+        <div className="flex items-center space-x-2">
+          <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
+          <span
+            className={`inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full ${
+              task.is_completed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+            }`}
+          >
+            {task.is_completed ? 'Completed' : 'Pending'}
+          </span>
         </div>
+        {task.description && (
+          <div className="mt-1 text-sm text-gray-600">
+            <p className="whitespace-pre-wrap break-words max-w-xs">{task.description}</p>
+          </div>
+        )}
       </div>
 
-      {/* Button */}
-      <div className="flex-shrink-0 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-        <button
-          type="button"
-          onClick={() => onEdit(task.id)}
-          className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-0 active:scale-100 transition-transform duration-150 ease-in-out font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        >
-          Edit
-        </button>
-        <button
-          type="button"
-          onClick={() => onDelete(task.id)}
-          className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-0 active:scale-100 transition-transform duration-150 ease-in-out font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        >
-          Delete
-        </button>
-        <button
-          type="button"
-          onClick={handleComplete}
-          className={`text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-0 active:scale-100 transition-transform duration-150 ease-in-out font-medium rounded-lg text-sm px-5 py-2.5 text-center ${
-            task.is_completed ? "bg-green-600" : "bg-green-400"
-          }`}
-        >
-          {task.is_completed ? "In Progress" : "Complete"}
-        </button>
-      </div>
-    </li>
+  {/* Middle Section: Created and Updated */}
+  <div className="flex flex-col items-center sm:items-start text-sm text-gray-500 space-y-2 sm:space-y-0">
+    <p className="flex items-center">
+      <span className="font-medium mr-1">Created:</span>
+      <span>{formatDate(task.created_at)}</span>
+    </p>
+    <p className="flex items-center">
+      <span className="font-medium mr-1">Updated:</span>
+      <span>{formatDate(task.updated_at)}</span>
+    </p>
+  </div>
+
+  {/* Right Section: Action Buttons */}
+  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+    <button
+      type="button"
+      onClick={() => onEdit(task.id)}
+      className="text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 font-semibold rounded-lg text-sm px-4 py-2 transition-transform transform hover:scale-100"
+    >
+      Edit
+    </button>
+    <button
+      type="button"
+      onClick={() => onDelete(task.id)}
+      className="text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 font-semibold rounded-lg text-sm px-4 py-2 transition-transform transform hover:scale-100"
+    >
+      Delete
+    </button>
+    <button
+      type="button"
+      onClick={handleComplete}
+      className={`text-white ${task.is_completed ? 'bg-green-500 hover:bg-green-600 focus:ring-green-400' : 'bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-400'} focus:outline-none focus:ring-2 font-semibold rounded-lg text-sm px-4 py-2 transition-transform transform hover:scale-100`}
+    >
+      {task.is_completed ? "Complete" : "Pending"}
+    </button>
+  </div>
+</li>
   );
 };
 

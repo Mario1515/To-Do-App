@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
+import { motion, AnimatePresence } from 'framer-motion';
 import Task from './Task';
 import AddTaskModal from './AddTaskModal';
 import EditTaskModal from './EditTaskModal';
 import axiosInstance from '../config/axiosConfig';
+import Loader from './Loader';
 import { fetcher } from '../config/fetcher';
 
 const Dashboard = () => {
-
   const [filter, setFilter] = useState('All');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetching all tasks
   const { data: tasks, error, mutate } = useSWR('/tasks', fetcher);
@@ -49,10 +51,28 @@ const Dashboard = () => {
   }) : [];
 
   return (
-  
-    <div className="w-full max-w-4xl mx-auto mt-6 p-4 bg-gray-50 rounded-lg shadow-lg">
+    <div className="w-full max-w-4xl mx-auto mt-6 p-4 bg-gray-50 rounded-lg shadow-lg relative">
+      {/* Loader */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <Loader />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Add Task Button and Filter Options */}
-      <div className="flex justify-between items-center mb-4">
+      <motion.div
+        className="flex justify-between items-center mb-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         {/* Add Task Button */}
         <button
           onClick={() => setIsAddModalOpen(true)}
@@ -82,32 +102,44 @@ const Dashboard = () => {
             Completed
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Task List */}
-      {filteredTasks.length > 0 ? (
-        <ul className="bg-white shadow overflow-hidden sm:rounded-md space-y-4">
-          {filteredTasks.map((task) => (
-            <Task
-              key={task.id}
-              task={task}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              updateTasks={mutate}
-            />
-          ))}
-        </ul>
-      ) : (
-        <div className="text-center text-gray-500 mt-8">
-          <p>No tasks available, create one.</p>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="mt-4 text-white bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5"
+      <AnimatePresence>
+        {filteredTasks.length > 0 ? (
+          <motion.ul
+            className="bg-gray-50 space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
           >
-            Create Task
-          </button>
-        </div>
-      )}
+            {filteredTasks.map((task) => (
+              <Task
+                key={task.id}
+                task={task}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                updateTasks={mutate}
+              />
+            ))}
+          </motion.ul>
+        ) : (
+          <motion.div
+            className="text-center text-gray-500 mt-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p>No tasks available, create one.</p>
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="mt-4 text-white bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5"
+            >
+              Create Task
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Task Modals */}
       <AddTaskModal
