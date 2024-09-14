@@ -69,7 +69,7 @@ const Task = ({ task, onEdit, onDelete, updateTasks }) => {
       onClick={handleComplete}
       className={`text-white ${!task.is_completed ? 'bg-green-500 hover:bg-green-600 focus:ring-green-400' : 'bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-400'} focus:outline-none focus:ring-2 font-semibold rounded-lg text-sm px-4 py-2 transition-transform transform hover:scale-100`}
     >
-      {task.is_completed ? "Pending" : "Complete"}
+      {task.is_completed ? "Undo" : "Complete"}
     </button>
   </div>
 </li>
