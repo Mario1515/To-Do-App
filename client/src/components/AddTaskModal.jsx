@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../config/axiosConfig';
 
-const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
+const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -22,7 +22,7 @@ const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
     setTitle('');
     setDescription('');
     setStatus('In Progress');
-    
+    updateTasks(); //updating tasks
     //closing modal
     onClose();
   };

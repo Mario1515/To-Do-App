@@ -19,12 +19,17 @@ const EditTaskModal = ({ isOpen, onClose, task }) => {
 
   //Update Handler
   const handleSubmit = (e) => {
+    
+    const isCompleted = status === "Completed" ? 1 : 0;
+
+    console.log(task);
+
     e.preventDefault();
     // PUT request to update the task
     axiosInstance.put(`http://localhost:3000/tasks/${task.id}`, {
       title: title,
       description: description,
-      status: status,
+      is_completed: isCompleted,
     })
       .then(() => {
         console.log("Task updated successfully!");

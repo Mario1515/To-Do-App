@@ -12,16 +12,16 @@ const Dashboard = () => {
   const [editingTask, setEditingTask] = useState(null);
 
   // Fetching all tasks...
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axiosInstance.get('/tasks');
-        setTasks(response.data);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      }
-    };
+  const fetchTasks = async () => {
+    try {
+      const response = await axiosInstance.get('/tasks');
+      setTasks(response.data);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchTasks();
   }, []);
   
@@ -35,6 +35,7 @@ const Dashboard = () => {
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setEditingTask(null);
+    fetchTasks(); //update dashboard
   };
 
   // Delete task Logic
@@ -42,14 +43,11 @@ const Dashboard = () => {
     try {
       await axiosInstance.delete(`/tasks/${id}`);
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+      fetchTasks(); //update dashboard
       console.log('Task deleted:', id);
     } catch (error) {
       console.error('Error deleting task:', error);
     }
-  };
-
-  const handleComplete = (id) => {
-    console.log('Complete task', id);
   };
 
   const filteredTasks = tasks.filter((task) => {
@@ -103,7 +101,7 @@ const Dashboard = () => {
               task={task}
               onEdit={handleEdit}
               onDelete={handleDelete}
-              onComplete={handleComplete}
+              updateTasks={fetchTasks} 
             />
           ))}
         </ul>
@@ -123,6 +121,7 @@ const Dashboard = () => {
       <AddTaskModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+        updateTasks={fetchTasks} 
       />
 
        {/* Edit Task Modal */}
@@ -131,6 +130,7 @@ const Dashboard = () => {
           isOpen={isEditModalOpen}
           onClose={handleCloseEditModal}
           task={editingTask}
+          
         />
       )}
     </div>
