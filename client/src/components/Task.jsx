@@ -1,24 +1,23 @@
 import React from 'react';
 import axiosInstance from '../config/axiosConfig';
-import { formatDate } from '../utils/formater';  // Adjust the path if necessary
+import { formatDate } from '../utils/formater';  
 
 const Task = ({ task, onEdit, onDelete, updateTasks }) => {
 
-  const handleComplete = () => {
-    axiosInstance.patch(`/tasks/${task.id}`, {
-      is_completed: !task.is_completed,
-    })
-      .then(() => {
-        updateTasks();
-      })
-      .catch((error) => {
-        console.error("Error updating task status:", error);
+  const handleComplete = async () => {
+    try {
+      await axiosInstance.patch(`/tasks/${task.id}`, {
+        is_completed: !task.is_completed,
       });
+      updateTasks(); 
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
   };
 
   return  (
     <li className="bg-white border border-gray-300 rounded-lg shadow-sm p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 sm:space-x-3 mb-2">
-      {/* Left Section: Title and Description */}
+      {/* Left Section: Title, Descriptiopn and Status*/}
       <div className="flex-1 flex flex-col">
         <div className="flex items-center space-x-2">
           <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
@@ -68,9 +67,9 @@ const Task = ({ task, onEdit, onDelete, updateTasks }) => {
     <button
       type="button"
       onClick={handleComplete}
-      className={`text-white ${task.is_completed ? 'bg-green-500 hover:bg-green-600 focus:ring-green-400' : 'bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-400'} focus:outline-none focus:ring-2 font-semibold rounded-lg text-sm px-4 py-2 transition-transform transform hover:scale-100`}
+      className={`text-white ${!task.is_completed ? 'bg-green-500 hover:bg-green-600 focus:ring-green-400' : 'bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-400'} focus:outline-none focus:ring-2 font-semibold rounded-lg text-sm px-4 py-2 transition-transform transform hover:scale-100`}
     >
-      {task.is_completed ? "Complete" : "Pending"}
+      {task.is_completed ? "Pending" : "Complete"}
     </button>
   </div>
 </li>

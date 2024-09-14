@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
+import { toast } from 'react-toastify'; 
+import { fetcher } from '../config/fetcher';
 import { motion, AnimatePresence } from 'framer-motion';
+import axiosInstance from '../config/axiosConfig';
+
 import Task from './Task';
 import AddTaskModal from './AddTaskModal';
 import EditTaskModal from './EditTaskModal';
 import DeleteModal from './DeleteModal'; 
-import NoTasks from './NoTasks'; // Import the new component
-import axiosInstance from '../config/axiosConfig';
-import { toast } from 'react-toastify'; 
-import { fetcher } from '../config/fetcher';
+import NoTasks from './NoTasks';
 
 const Dashboard = () => {
+  
   const [filter, setFilter] = useState('All');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [deletingTaskId, setDeletingTaskId] = useState(null); 
 
@@ -54,6 +56,7 @@ const Dashboard = () => {
     setIsDeleteModalOpen(true);
   };
 
+  //Filter Logic
   const filteredTasks = tasks ? tasks.filter((task) => {
     if (filter === 'All') return true;
     if (filter === 'In Progress') return !task.is_completed;
@@ -121,7 +124,7 @@ const Dashboard = () => {
             ))}
           </motion.ul>
         ) : (
-          <NoTasks onAddTask={() => setIsAddModalOpen(true)} /> // Use the new component
+          <NoTasks onAddTask={() => setIsAddModalOpen(true)} />
         )}
       </AnimatePresence>
 

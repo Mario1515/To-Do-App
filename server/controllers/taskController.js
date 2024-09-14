@@ -3,12 +3,15 @@ const taskModel = require("../models/taskModels");
 
 //POST - add task - "/create"
 router.post("/create", async (req, res) => {
-  console.log(req.body);
   const { title, description, is_completed } = req.body;
 
   // Validate input
   if (!title) {
     return res.status(400).json({ error: "Title is required" });
+  }
+
+  if (description && description.length > 255) {
+    return res.status(400).json({ error: 'Description cannot exceed 255 characters' });
   }
 
   //Call to Model
@@ -52,6 +55,10 @@ router.put("/:id", async (req, res) => {
     return res.status(400).json({ error: "Title is required" });
   }
 
+  if (description && description.length > 255) {
+    return res.status(400).json({ error: 'Description cannot exceed 255 characters' });
+  }
+
   // Call to Model
   taskModel.updateTask(
     taskId,
@@ -69,8 +76,6 @@ router.put("/:id", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   const taskId = req.params.id;
   const { is_completed } = req.body;
-
-  // console.log("Updating task:", taskId, "Status:", is_completed);
 
   if (is_completed === undefined) return res.status(400).json({ error: "Status is required" });
 

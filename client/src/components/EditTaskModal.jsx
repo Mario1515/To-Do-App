@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../config/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-toastify';  // Import toast
-import { MAX_DESCRIPTION_LENGTH } from '../utils/constants';
+import { toast } from 'react-toastify'; 
+import { MAX_DESCRIPTION_LENGTH, MAX_TITLE_LENGTH } from '../utils/constants';
 
 
 const EditTaskModal = ({ isOpen, onClose, task }) => {
@@ -21,10 +21,14 @@ const EditTaskModal = ({ isOpen, onClose, task }) => {
   }, [task]);
 
   // Update Handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     //Validations
+    if (title.length > MAX_TITLE_LENGTH) {
+      toast.error(`Title cannot exceed ${MAX_TITLE_LENGTH} characters`);
+      return;
+    }
     if (description.length > MAX_DESCRIPTION_LENGTH) {
       toast.error(`Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`);
       return;
@@ -33,18 +37,18 @@ const EditTaskModal = ({ isOpen, onClose, task }) => {
     const isCompleted = status === 'Completed' ? 1 : 0;
 
     // PUT request to update the task
-    axiosInstance.put(`/tasks/${task.id}`, {
-      title: title,
-      description: description,
-      is_completed: isCompleted,
-    })
-      .then(() => {
-        toast.success('Task updated successfully!'); 
-        onClose();
-      })
-      .catch((error) => {
-        console.error('Error updating task:', error);
+    try {
+      await axiosInstance.put(`/tasks/${task.id}`, {
+        title: title,
+        description: description,
+        is_completed: isCompleted,
       });
+      toast.success('Task updated successfully!');
+      onClose();
+    } catch (error) {
+      console.error('Error updating task:', error);
+      toast.error('Failed to update task. Please try again.');
+    }
   };
 
   return (

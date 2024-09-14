@@ -62,7 +62,7 @@ const updateTaskStatus = (taskId, { is_completed }, callback) => {
   // Update the task status
   db.query(
     query,
-    [is_completed ? 1 : 0, taskId],  // Ensure is_completed is either 0 or 1
+    [is_completed ? 1 : 0, taskId],  
     (error, results) => {
       if (error) return callback(error, null);
       if (results.affectedRows === 0) return callback(new Error('Task not found'), null);

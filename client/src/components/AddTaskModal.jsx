@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axiosInstance from '../config/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify'; 
-import { MAX_DESCRIPTION_LENGTH } from '../utils/constants';
+import { MAX_DESCRIPTION_LENGTH, MAX_TITLE_LENGTH } from '../utils/constants';
 
 
 const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
@@ -14,6 +14,10 @@ const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
     e.preventDefault();
 
     //Validations
+    if (title.length > MAX_TITLE_LENGTH) {
+      toast.error(`Title cannot exceed ${MAX_TITLE_LENGTH} characters`);
+      return;
+    }
     if (description.length > MAX_DESCRIPTION_LENGTH) {
       toast.error(`Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`);
       return;
@@ -32,6 +36,7 @@ const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
     } catch (error) {
       console.error('Error adding task:', error);
     }
+    
     setTitle('');
     setDescription('');
     setStatus('In Progress');
