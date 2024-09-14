@@ -1,5 +1,5 @@
 import React from 'react';
-import axiosInstance from '../../config/axiosConfig';
+import axiosInstance from '../config/axiosConfig';
 
 const Task = ({ task, onEdit, onDelete, updateTasks }) => {
 

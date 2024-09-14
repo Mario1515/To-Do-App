@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosInstance from '../../config/axiosConfig';
+import axiosInstance from '../config/axiosConfig';
 
 const EditTaskModal = ({ isOpen, onClose, task }) => {
 

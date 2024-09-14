@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axiosInstance from '../../config/axiosConfig';
+import axiosInstance from '../config/axiosConfig';
 
 const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
 
@@ -7,23 +7,26 @@ const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('In Progress');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async  (e) => {
     e.preventDefault();
-    //Post request to Server
-    axiosInstance.post("/tasks/create", {
+    
+    const isCompleted = status === 'Completed' ? 1 : 0;
+
+    try {
+      await axiosInstance.post('/tasks/create', {
         title: title,
         description: description,
-        status: status,
-    }).then(() => {
-    console.log("success!");
-    });
+        is_completed: isCompleted,
+      });
+      console.log('Task added successfully!');
+      updateTasks();
+    } catch (error) {
+      console.error('Error adding task:', error);
+    }
     
-    //Clearing fiels
     setTitle('');
     setDescription('');
     setStatus('In Progress');
-    updateTasks(); //updating tasks
-    //closing modal
     onClose();
   };
 

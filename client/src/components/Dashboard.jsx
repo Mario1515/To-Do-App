@@ -1,31 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import useSWR from 'swr';
 import Task from './Task';
 import AddTaskModal from './AddTaskModal';
 import EditTaskModal from './EditTaskModal';
-import axiosInstance from '../../config/axiosConfig';
+import axiosInstance from '../config/axiosConfig';
+import { fetcher } from '../config/fetcher';
 
 const Dashboard = () => {
-  const [tasks, setTasks] = useState([]);
+
   const [filter, setFilter] = useState('All');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
 
-  // Fetching all tasks...
-  const fetchTasks = async () => {
-    try {
-      const response = await axiosInstance.get('/tasks');
-      setTasks(response.data);
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-    }
-  };
+  // Fetching all tasks
+  const { data: tasks, error, mutate } = useSWR('/tasks', fetcher);
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-  
-  //Edit Logic Logic
+  // Edit Logic
   const handleEdit = (id) => {
     const task = tasks.find(t => t.id === id);
     setEditingTask(task);
@@ -35,29 +26,30 @@ const Dashboard = () => {
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setEditingTask(null);
-    fetchTasks(); //update dashboard
+    mutate();
   };
 
   // Delete task Logic
   const handleDelete = async (id) => {
     try {
+      mutate(async (currentTasks) => currentTasks.filter(task => task.id !== id), false);
       await axiosInstance.delete(`/tasks/${id}`);
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
-      fetchTasks(); //update dashboard
-      console.log('Task deleted:', id);
+      mutate(); 
     } catch (error) {
       console.error('Error deleting task:', error);
+      mutate();
     }
   };
 
-  const filteredTasks = tasks.filter((task) => {
+  const filteredTasks = tasks ? tasks.filter((task) => {
     if (filter === 'All') return true;
-    if (filter === 'In Progress') return task.status === 'Active' || task.status === 'Pending';
-    if (filter === 'Completed') return task.status === 'Completed';
+    if (filter === 'In Progress') return !task.is_completed;
+    if (filter === 'Completed') return task.is_completed;
     return true;
-  });
+  }) : [];
 
   return (
+  
     <div className="w-full max-w-4xl mx-auto mt-6 p-4 bg-gray-50 rounded-lg shadow-lg">
       {/* Add Task Button and Filter Options */}
       <div className="flex justify-between items-center mb-4">
@@ -101,7 +93,7 @@ const Dashboard = () => {
               task={task}
               onEdit={handleEdit}
               onDelete={handleDelete}
-              updateTasks={fetchTasks} 
+              updateTasks={mutate}
             />
           ))}
         </ul>
@@ -117,20 +109,18 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Task Modal */}
+      {/* Task Modals */}
       <AddTaskModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        updateTasks={fetchTasks} 
+        updateTasks={mutate}
       />
 
-       {/* Edit Task Modal */}
-       {editingTask && (
+      {editingTask && (
         <EditTaskModal
           isOpen={isEditModalOpen}
           onClose={handleCloseEditModal}
           task={editingTask}
-          
         />
       )}
     </div>
