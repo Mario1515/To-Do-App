@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Axios from "axios";
 
-const TaskModal = ({ isOpen, onClose, onAddTask }) => {
+const AddTaskModal = ({ isOpen, onClose, onAddTask }) => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -112,4 +112,4 @@ const TaskModal = ({ isOpen, onClose, onAddTask }) => {
   );
 };
 
-export default TaskModal;
+export default AddTaskModal;

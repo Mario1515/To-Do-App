@@ -36,8 +36,27 @@ const deleteTask = (taskId, callback) => {
   });
 };
 
+//EDIT Task
+const updateTask = (taskId, task, callback) => {
+  const { title, description, is_completed } = task;
+
+  const query = 
+    "UPDATE tasks SET title = ?, description = ?, is_completed = ?, updated_at = NOW() WHERE id = ?";
+
+  db.query(
+    query,
+    [title, description || null, is_completed || 0, taskId],
+    (error, results) => {
+      if (error) return callback(error, null);
+      if (results.affectedRows === 0) return callback(new Error('Task not found'), null);
+      callback(null, { id: taskId, ...task });
+    }
+  );
+};
+
 module.exports = {
   addTask,
   getAllTasks,
   deleteTask,
+  updateTask, 
 };

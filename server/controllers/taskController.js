@@ -43,6 +43,25 @@ router.delete("/:id", async (req, res) => {
     });
   });
   
+//EDIT - edit/update task
+router.put("/:id", async (req, res) => {
+  const taskId = req.params.id;
+  const { title, description, is_completed } = req.body;
+
+  // Validate input
+  if (!title) {
+      return res.status(400).json({ error: 'Title is required' });
+  }
+
+  // Call to Model
+  taskModel.updateTask(taskId, { title, description, is_completed }, (error, result) => {
+      if (error) {
+          return res.status(500).json({ error: 'Failed to update task' });
+      }
+      res.status(200).json(result);
+  });
+});
+
 
 
 module.exports = router;

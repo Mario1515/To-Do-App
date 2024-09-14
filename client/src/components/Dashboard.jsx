@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Task from './Task';
-import TaskModal from './TaskModal';
+import AddTaskModal from './AddTaskModal';
+import EditTaskModal from './EditTaskModal';
 import axiosInstance from '../../config/axiosConfig';
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState('All');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
 
   // Fetching all tasks...
   useEffect(() => {
@@ -21,12 +24,20 @@ const Dashboard = () => {
 
     fetchTasks();
   }, []);
-
+  
+  //Edit Logic Logic
   const handleEdit = (id) => {
-    console.log('Edit task', id);
+    const task = tasks.find(t => t.id === id);
+    setEditingTask(task);
+    setIsEditModalOpen(true);
   };
 
-  // Delete task
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingTask(null);
+  };
+
+  // Delete task Logic
   const handleDelete = async (id) => {
     try {
       await axiosInstance.delete(`/tasks/${id}`);
@@ -54,7 +65,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-center mb-4">
         {/* Add Task Button */}
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsAddModalOpen(true)}
           className="text-white bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
           Add Task
@@ -100,7 +111,7 @@ const Dashboard = () => {
         <div className="text-center text-gray-500 mt-8">
           <p>No tasks available, create one.</p>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsAddModalOpen(true)}
             className="mt-4 text-white bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5"
           >
             Create Task
@@ -109,10 +120,19 @@ const Dashboard = () => {
       )}
 
       {/* Task Modal */}
-      <TaskModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+      <AddTaskModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
       />
+
+       {/* Edit Task Modal */}
+       {editingTask && (
+        <EditTaskModal
+          isOpen={isEditModalOpen}
+          onClose={handleCloseEditModal}
+          task={editingTask}
+        />
+      )}
     </div>
   );
 };
