@@ -9,7 +9,6 @@ const Task = ({ task, onEdit, onDelete, updateTasks }) => {
       is_completed: !task.is_completed,
     })
       .then(() => {
-        console.log("Successfully completed", task.id);
         updateTasks();
       })
       .catch((error) => {

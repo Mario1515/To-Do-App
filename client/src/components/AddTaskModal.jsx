@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axiosInstance from '../config/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';  // Import toast
+
 
 const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
   const [title, setTitle] = useState('');
@@ -18,12 +20,11 @@ const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
         description: description,
         is_completed: isCompleted,
       });
-      console.log('Task added successfully!');
+      toast.success('Task added successfully!');  
       updateTasks();
     } catch (error) {
       console.error('Error adding task:', error);
     }
-    
     setTitle('');
     setDescription('');
     setStatus('In Progress');

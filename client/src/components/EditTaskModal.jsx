@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../config/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';  // Import toast
+
 
 const EditTaskModal = ({ isOpen, onClose, task }) => {
   // Local state for input data
@@ -30,7 +32,7 @@ const EditTaskModal = ({ isOpen, onClose, task }) => {
       is_completed: isCompleted,
     })
       .then(() => {
-        console.log('Task updated successfully!');
+        toast.success('Task updated successfully!'); 
         onClose();
       })
       .catch((error) => {
