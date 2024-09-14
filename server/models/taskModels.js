@@ -59,17 +59,20 @@ const updateTaskStatus = (taskId, { is_completed }, callback) => {
   const query = 
     "UPDATE tasks SET is_completed = ?, updated_at = NOW() WHERE id = ?";
 
-    db.query(
-      query,
-      [is_completed, taskId],
-      (error, results) => {
-        if (error) return callback(error, null);
-        if (results.affectedRows === 0) return callback(new Error('Task not found'), null);
-        db.query('SELECT * FROM tasks WHERE id = ?', [taskId], (err, [task]) => {
-          if (err) return callback(err, null);
-          callback(null, task);
-        });
-      }
+  // Update the task status
+  db.query(
+    query,
+    [is_completed ? 1 : 0, taskId],  // Ensure is_completed is either 0 or 1
+    (error, results) => {
+      if (error) return callback(error, null);
+      if (results.affectedRows === 0) return callback(new Error('Task not found'), null);
+      
+      // Retrieve the updated task
+      db.query('SELECT * FROM tasks WHERE id = ?', [taskId], (err, [task]) => {
+        if (err) return callback(err, null);
+        callback(null, task);
+      });
+    }
   );
 };
 

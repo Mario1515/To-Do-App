@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const taskModel = require("../models/taskModels");
 
-//POST - add task
+//POST - add task - "/create"
 router.post("/create", async (req, res) => {
   console.log(req.body);
   const { title, description, is_completed } = req.body;
@@ -20,7 +20,7 @@ router.post("/create", async (req, res) => {
   });
 });
 
-//GET - get all tasks
+//GET - get all tasks 
 router.get("/", async (req, res) => {
   taskModel.getAllTasks((error, tasks) => {
     if (error) {
@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
   });
 });
 
-//DELETE - delete the task
+//DELETE - delete the task "/tasks/:id"
 router.delete("/:id", async (req, res) => {
   const taskId = req.params.id;
 
@@ -42,7 +42,7 @@ router.delete("/:id", async (req, res) => {
   });
 });
 
-//EDIT - edit/update task
+//EDIT - edit the task - "/tasks/:id"
 router.put("/:id", async (req, res) => {
   const taskId = req.params.id;
   const { title, description, is_completed } = req.body;
@@ -65,18 +65,20 @@ router.put("/:id", async (req, res) => {
   );
 });
 
-//PATCH - update task status
-
+//PATCH - update task status - "/tasks/:id"
 router.patch("/:id", async (req, res) => {
   const taskId = req.params.id;
   const { is_completed } = req.body;
 
-  // Validate input
-  if (!is_completed) return res.status(400).json({ error: "Status is required" });
+  // console.log("Updating task:", taskId, "Status:", is_completed);
 
-  // Call to Model
+  if (is_completed === undefined) return res.status(400).json({ error: "Status is required" });
+
   taskModel.updateTaskStatus(taskId, { is_completed }, (error, result) => {
-    if (error) return res.status(500).json({ error: "Failed to update task status" });
+    if (error) {
+      console.error("Failed to update task status:", error);
+      return res.status(500).json({ error: "Failed to update task status" });
+    }
     res.status(200).json(result);
   });
 });
