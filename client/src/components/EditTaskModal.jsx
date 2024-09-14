@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../config/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';  // Import toast
+import { MAX_DESCRIPTION_LENGTH } from '../utils/constants';
 
 
 const EditTaskModal = ({ isOpen, onClose, task }) => {
@@ -22,6 +23,12 @@ const EditTaskModal = ({ isOpen, onClose, task }) => {
   // Update Handler
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    //Validations
+    if (description.length > MAX_DESCRIPTION_LENGTH) {
+      toast.error(`Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`);
+      return;
+    }
     
     const isCompleted = status === 'Completed' ? 1 : 0;
 

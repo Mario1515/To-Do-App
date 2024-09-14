@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axiosInstance from '../config/axiosConfig';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-toastify';  // Import toast
+import { toast } from 'react-toastify'; 
+import { MAX_DESCRIPTION_LENGTH } from '../utils/constants';
 
 
 const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
@@ -11,6 +12,12 @@ const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    //Validations
+    if (description.length > MAX_DESCRIPTION_LENGTH) {
+      toast.error(`Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`);
+      return;
+    }
     
     const isCompleted = status === 'Completed' ? 1 : 0;
 
@@ -70,6 +77,7 @@ const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
                         Title
                       </label>
                       <input
+                        placeholder="Enter task title"
                         id="title"
                         type="text"
                         value={title}
@@ -85,6 +93,7 @@ const AddTaskModal = ({ isOpen, onClose, updateTasks }) => {
                       </label>
                       <textarea
                         id="description"
+                        placeholder="Enter a short description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows="3"
