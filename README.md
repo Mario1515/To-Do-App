@@ -1,5 +1,17 @@
 # To-Do-App
  A simple, responsive to-do app. The frontend was built with React, Taiwind CSS, SWR, Framer and react-toastify. The backend was built with Node.js, Express.js, MySQL
+
+ ## Features
+- Add, edit, and delete tasks.
+- Filter tasks by status (completed/in-progress).
+- Responsive design for mobile and desktop (taiwind css).
+- SWR: For data fetching and caching
+- "Created at" and "Updated at" dates.
+- Interactive Animations (using framer).
+- Modals for (Add, Edit and Delete) prompts.
+- Toast notifications for task actions (using react-toastify).
+- Quick access to Complete / Undo buttons.
+- Live Status of each task (Pending or Completed).
  
 ## Installation
 - `git clone https://github.com/Mario1515/To-Do-App.git`
@@ -31,17 +43,6 @@
 #### Others
 -  **SWR**, **Framer**, **React-toastify**
 
-## Features
-- Add, edit, and delete tasks.
-- Filter tasks by status (completed/in-progress).
-- Responsive design for mobile and desktop (taiwind css).
-- SWR: For data fetching and caching
-- "Created at" and "Updated at" dates.
-- Interactive Animations (using framer).
-- Modals for (Add, Edit and Delete) prompts.
-- Toast notifications for task actions (using react-toastify).
-- Quick access to Complete / Undo buttons.
-- Live Status of each task (Pending or Completed).
 
 ## Preview
 ![image](https://github.com/user-attachments/assets/9e77d820-0b86-4cdb-bdf4-94621abe9f72)
