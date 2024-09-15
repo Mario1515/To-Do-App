@@ -1,6 +1,6 @@
-# To-Do-App 	:white_check_mark:
- A simple, responsive to-do app. The frontend was built with React, Taiwind CSS, SWR, Framer and react-toastify. The backend was built with Node.js, Express.js, MySQL
-
+# To-Do-App :white_check_mark:
+ A simple, responsive to-do app. The frontend was built with React, Taiwind CSS, SWR, Framer and react-toastify. The backend was built with Node.js, Express.js, MySQL 
+ 
  ## Features
 - Add, edit, and delete tasks.
 - Filter tasks by status (completed/in-progress).
